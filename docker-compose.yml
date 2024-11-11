@@ -1,0 +1,30 @@
+services:
+  mysql:
+    image: mysql:latest # Indica la imagen que se va a utilizar
+    container_name: base_mysql # Indica el nombre del contenedor
+    restart: unless-stopped # Indica que el contenedor se reiniciará siempre que se detenga
+    environment:
+      MYSQL_DATABASE: prestashop # Indica el nombre de la base de datos
+      MYSQL_ROOT_PASSWORD: admin # Indica la contraseña del usuario root
+    networks:
+      - prestashop_network # Indica la red a la que pertenece el contenedor
+  prestashop:
+    image: prestashop/prestashop:latest
+    container_name: prestashop
+    restart: always
+    depends_on:
+      - mysql # Indica que prestashop depende primero del arranque de mysql
+    ports:
+      - 8080:80 # Indica el puerto utilizado
+    environment:
+      DB_SERVER: base-mysql # Indica el nombre del contenedor de la base de datos
+      DB_NAME: prestashop # Indica el nombre de la base de datos
+      DB_USER: root # Indica el usuario de la base de datos
+      DB_PASSWD: admin # Indica la contraseña de la base de datos
+    networks:
+      - prestashop_network
+networks:
+    prestashop_network:
+
+
+
